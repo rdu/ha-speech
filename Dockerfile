@@ -27,6 +27,6 @@ ENV GOOGLE_APPLICATION_CREDENTIALS="/home/credentials.json"
 #RUN tar xfj rpi*.bz2
 
 #COPY asoundrc /root/.asoundrc
-COPY idle.sh /home/idle.sh
+#COPY idle.sh /home/idle.sh
 
-ENTRYPOINT /home/idle.sh
+ENTRYPOINT python3 /home/server.py
