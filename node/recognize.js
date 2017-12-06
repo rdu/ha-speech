@@ -1,5 +1,6 @@
 var net = require('net');
 var mqtt = require('mqtt')
+var iconv = require('iconv-lite');
 
 var PORT=process.env.PORT || 9000;
 var MQTT_URL=process.env.MQTT_URL || "mqtt://10.10.0.137";
@@ -73,12 +74,15 @@ function streamingRecognize(sh)
     .streamingRecognize(request)
     .on('error', console.error)
     .on('data', data => {
+      var text = data.results[0].alternatives[0].transcript;
+      var bb = new Buffer(text, "iso-8859-1");
+      var text = iconv.encode(bb, "utf-8");
       console.log(
-        `Transcription: ${data.results[0].alternatives[0].transcript}`
+        `Transcription: ${text}`
       );
       if (canPost)
       {
-        mqttClient.publish(MQTT_PUBLISH_TOPIC, data.results[0].alternatives[0].transcript);
+        mqttClient.publish(MQTT_PUBLISH_TOPIC, text);
       }
       else
       {
